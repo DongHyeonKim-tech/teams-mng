@@ -25,6 +25,8 @@ export async function callMsGraph(
       ? graphConfig.graphMeEndpoint
       : type === "user"
       ? graphConfig.graphUserEndpoint
+      : type === "searchUser"
+      ? `${graphConfig.graphUserEndpoint}?search="displayName:${searchValue}"`
       : type === "team"
       ? graphConfig.graphTeamsEndpoint
       : type === "channel"

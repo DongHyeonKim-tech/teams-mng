@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import client from "../../../api/client";
 
-const GetEvlListPopup = ({ open, onClose, arrEmp, setArrChoicedEmp }) => {
+const GetEvlListPopup = ({
+  open,
+  onClose,
+  arrChoicedEmp,
+  setArrChoicedEmp,
+}) => {
   const [evlList, setEvlList] = useState([]);
   const [empList, setEmpList] = useState([]);
   const [selectedRowKey, setSelectedRowKey] = useState("");
@@ -33,12 +38,16 @@ const GetEvlListPopup = ({ open, onClose, arrEmp, setArrChoicedEmp }) => {
       //       return { ...item, key: idx + 1 };
       //     })
       //   );
-      let empNoList = response.data.map((item) => item.empno);
-      setEmpList(arrEmp.filter((item) => empNoList.includes(item.USER_NO)));
+      let empNoList = arrChoicedEmp.map((item) => item.empno);
+      console.log("empNoList: ", empNoList);
+      setEmpList(
+        response.data.filter((item) => empNoList.includes(item.USER_NO))
+      );
     });
   };
 
   const fnButtonClick = () => {
+    console.log("empList: ", empList);
     setArrChoicedEmp((prev) => {
       return [...prev, ...empList];
     });

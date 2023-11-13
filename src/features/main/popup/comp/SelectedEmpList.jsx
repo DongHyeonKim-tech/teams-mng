@@ -19,7 +19,7 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
       <GetEvlListPopup
         open={open}
         onClose={onClose}
-        arrEmp={arrEmp}
+        arrChoicedEmp={arrChoicedEmp}
         setArrChoicedEmp={setArrChoicedEmp}
       />
       <div className={"registContentTitle"}>

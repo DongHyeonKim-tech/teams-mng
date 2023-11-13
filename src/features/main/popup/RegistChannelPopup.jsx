@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { Box, Grid } from "@mui/material";
-import { tmpEmpData } from "../../../tmp";
 import { Item } from "../../common/utils";
 import Info from "./comp/Info";
 import EmpList from "./comp/EmpList";
 import SelectedEmpList from "./comp/SelectedEmpList";
+import { callMsGraph } from "../../../graph";
 
 const RegistChannelPopup = ({
   open,
@@ -13,17 +13,32 @@ const RegistChannelPopup = ({
   onClose,
   channelInfo,
   tabMenu,
+  token,
 }) => {
-  const [arrEmp, setArrEmp] = useState(tmpEmpData);
+  const [arrEmp, setArrEmp] = useState([]);
   const [arrChoicedEmp, setArrChoicedEmp] = useState([]);
   const [objChannel, setObjChannel] = useState({
     displayName: "",
     description: "",
   });
 
+  const [originData, setOriginData] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      callMsGraph(token, "user").then((res) => {
+        console.log("user: ", res);
+        setOriginData(res.value);
+        setArrEmp(res.value);
+      });
+    }
+  }, [token]);
+
+  useEffect(() => console.log("originData: ", originData), [originData]);
+
   useEffect(() => {
     let arrChoicedEmpNo = arrChoicedEmp.map((item) => item.USER_NO);
-    const empData = tmpEmpData.filter(
+    const empData = originData.filter(
       (item) => !arrChoicedEmpNo.includes(item.USER_NO)
     );
     setArrEmp(empData);
@@ -80,11 +95,12 @@ const RegistChannelPopup = ({
           <Grid item xs={2} sm={4} md={3} key={2}>
             <Item>
               <EmpList
-                tmpEmpData={tmpEmpData}
+                originData={originData}
                 arrEmp={arrEmp}
                 setArrEmp={setArrEmp}
                 arrChoicedEmp={arrChoicedEmp}
                 setArrChoicedEmp={setArrChoicedEmp}
+                token={token}
               />
             </Item>
           </Grid>

@@ -9,14 +9,17 @@ import {
   Divider,
 } from "@mui/material";
 import { SearchEmp } from "../../../common/utils";
+import { callMsGraph } from "../../../../graph";
 
 const EmpList = ({
-  tmpEmpData,
+  originData,
   arrEmp,
   setArrEmp,
   arrChoicedEmp,
   setArrChoicedEmp,
+  token,
 }) => {
+  console.log("arrEmp: ", arrEmp);
   const [inputValue, setInputValue] = useState("");
 
   const onInputChange = (e) => {
@@ -33,6 +36,7 @@ const EmpList = ({
           !arrChoicedEmpNo.includes(item.USER_NO)
       )
     );
+    callMsGraph(token, "searchUser");
   };
   return (
     <>
