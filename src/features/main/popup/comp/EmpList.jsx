@@ -9,17 +9,16 @@ import {
   Divider,
 } from "@mui/material";
 import { SearchEmp } from "../../../common/utils";
-import { callMsGraph } from "../../../../graph";
+import { getSearchUserList } from "../../../../graph";
+import { notification } from "antd";
 
 const EmpList = ({
-  originData,
   arrEmp,
   setArrEmp,
   arrChoicedEmp,
   setArrChoicedEmp,
   token,
 }) => {
-  console.log("arrEmp: ", arrEmp);
   const [inputValue, setInputValue] = useState("");
 
   const onInputChange = (e) => {
@@ -28,15 +27,10 @@ const EmpList = ({
 
   const onSearch = (value) => {
     console.log("value: ", value);
-    let arrChoicedEmpNo = arrChoicedEmp.map((item) => item.USER_NO);
-    setArrEmp(
-      tmpEmpData.filter(
-        (item) =>
-          item.USER_NM.includes(value) &&
-          !arrChoicedEmpNo.includes(item.USER_NO)
-      )
-    );
-    callMsGraph(token, "searchUser");
+    getSearchUserList(token, value).then((res) => {
+      console.log("searchRes: ", res);
+      setArrEmp(res.value);
+    });
   };
   return (
     <>
@@ -66,17 +60,37 @@ const EmpList = ({
           {arrEmp.map((item, idx) => {
             return (
               <div key={idx}>
-                <ListItem key={item.USER_NO} disablePadding>
+                <ListItem key={item.id} disablePadding>
                   <ListItemButton
                     onClick={() =>
                       setArrChoicedEmp((prev) => {
-                        return [...prev, item];
+                        let arrChoicedUserId = prev.map(
+                          (item) => item.mail.split("@")[0]
+                        );
+                        console.log("item: ", item);
+                        let user_id = item.mail.split("@")[0];
+                        if (arrChoicedUserId.includes(user_id)) {
+                          console.log("include");
+                          notification.warning({
+                            message: "이미 추가된 직원입니다.",
+                          });
+                          return prev;
+                        } else {
+                          setArrEmp((prev) => {
+                            return prev.filter(
+                              (prevItem) => prevItem.id !== item.id
+                            );
+                          });
+                          return [...prev, item];
+                        }
                       })
                     }
                   >
                     <ListItemAvatar>
                       <Avatar
-                        src={`https://hub.haeahn.com/Storage/GW/ImageStorage/Employee/${item.USER_ID}.jpg`}
+                        src={`https://hub.haeahn.com/Storage/GW/ImageStorage/Employee/${
+                          item.mail.split("@")[0]
+                        }.jpg`}
                         sx={{
                           width: 32,
                           height: 32,
@@ -86,23 +100,23 @@ const EmpList = ({
                       />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${item.USER_NM} `}
+                      primary={`${item.displayName} `}
                       disableTypography={true}
                       className={"listItemTextName"}
                       sx={{ flex: "none" }}
                     />
                     <ListItemText
-                      primary={`${item.TITLE_NM}`}
+                      primary={`${item.jobTitle}`}
                       disableTypography={true}
                       className={"listItemText"}
                       sx={{ flex: "none" }}
                     />
-                    <ListItemText
+                    {/* <ListItemText
                       primary={`${item.DEPT_NM}`}
                       disableTypography={true}
                       className={"listItemText"}
                       sx={{ color: "#ADAEB1" }}
-                    />
+                    /> */}
                   </ListItemButton>
                 </ListItem>
                 <Divider />

@@ -8,19 +8,24 @@ import {
   Divider,
 } from "@mui/material";
 import client from "../../../api/client";
+import { getEvlUserList } from "../../../graph";
 
 const GetEvlListPopup = ({
   open,
   onClose,
   arrChoicedEmp,
   setArrChoicedEmp,
+  token,
+  setLoading,
 }) => {
   const [evlList, setEvlList] = useState([]);
   const [empList, setEmpList] = useState([]);
   const [selectedRowKey, setSelectedRowKey] = useState("");
 
+  const [userCount, setUserCount] = useState(0);
+
   useEffect(() => {
-    client.get("/BIMTest/manage/tests").then((response) => {
+    client.get("/BIMTestManage/tests").then((response) => {
       setEvlList(
         response.data.map((item, idx) => {
           return { ...item, key: idx + 1 };
@@ -31,36 +36,56 @@ const GetEvlListPopup = ({
 
   const getEvlEmpList = (seq) => {
     setSelectedRowKey(seq);
-    client.get(`/BIMTest/manage/tests/${seq}/users`).then((response) => {
-      console.log("response: ", response);
-      //   setChannelData(
-      //     response.data.map((item, idx) => {
-      //       return { ...item, key: idx + 1 };
-      //     })
-      //   );
-      let empNoList = arrChoicedEmp.map((item) => item.empno);
-      console.log("empNoList: ", empNoList);
+    client.get(`/BIMTestManage/tests/${seq}/users`).then((response) => {
+      let userIdList = arrChoicedEmp.map((item) => item.mail.split("@")[0]);
       setEmpList(
-        response.data.filter((item) => empNoList.includes(item.USER_NO))
+        userIdList.length > 0
+          ? response.data.filter((item) => !userIdList.includes(item.user_id))
+          : response.data
       );
     });
   };
 
-  const fnButtonClick = () => {
-    console.log("empList: ", empList);
-    setArrChoicedEmp((prev) => {
-      return [...prev, ...empList];
+  const fnButtonClick = async () => {
+    setLoading(true);
+    empList.map((item) => {
+      getEvlUserList(token, `${item.user_id}@`).then((res) => {
+        if (res.value.length > 0) {
+          let user = res.value[0];
+          setUserCount((prev) => Number(prev) + 1);
+          setArrChoicedEmp((prev) => {
+            return [...prev, { ...user, canDelete: true }];
+          });
+        } else {
+          setEmpList((prev) => {
+            return prev.filter((prevItem) => prevItem.user_id !== item.user_id);
+          });
+        }
+      });
     });
   };
 
-  useEffect(() => console.log("evlList: ", evlList), [evlList]);
+  // useEffect(() => {
+  //   console.log("userCount.lenght: ", userCount.length);
+  //   console.log("userCount: ", userCount);
+  //   userCount.length > 0 ? setLoading(true) : setLoading(false);
+  // }, [userCount]);
+
+  useEffect(() => {
+    console.log("userCount: ", userCount);
+    console.log("empList.length: ", empList.length);
+    if (userCount > 0 && userCount === empList.length) {
+      console.log("getEvlLoadingFalse");
+      setLoading(false);
+    }
+  }, [userCount, empList]);
 
   return (
     <Modal
       open={open}
       onCancel={() => {
         onClose();
-        setSelectedRowKey(null);
+        setSelectedRowKey("");
       }}
       title={"평가 목록"}
       footer={
@@ -68,6 +93,8 @@ const GetEvlListPopup = ({
           onClick={() => {
             fnButtonClick();
             onClose();
+            setUserCount(0);
+            console.log("userCount: ", userCount);
           }}
         >
           확인

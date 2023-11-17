@@ -11,17 +11,14 @@ import {
 import { CloseCircleOutlined } from "@ant-design/icons/lib/icons";
 import GetEvlListPopup from "../GetEvlListPopup";
 
-const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
-  const [open, setOpen] = useState(false);
-  const onClose = () => setOpen(false);
+const SelectedEmpList = ({
+  arrEmp,
+  arrChoicedEmp,
+  setArrChoicedEmp,
+  setEvlListPopupOpen,
+}) => {
   return (
     <>
-      <GetEvlListPopup
-        open={open}
-        onClose={onClose}
-        arrChoicedEmp={arrChoicedEmp}
-        setArrChoicedEmp={setArrChoicedEmp}
-      />
       <div className={"registContentTitle"}>
         선택된 직원 ({arrChoicedEmp.length}명)
         <button
@@ -30,7 +27,9 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
             float: "right",
           }}
           onClick={() => {
-            setArrChoicedEmp([]);
+            setArrChoicedEmp((prev) => {
+              return prev.filter((item) => !item.canDelete);
+            });
           }}
         >
           전체 선택 해제
@@ -42,7 +41,7 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
             marginRight: "10px",
           }}
           onClick={() => {
-            setOpen(true);
+            setEvlListPopupOpen(true);
           }}
         >
           평가 응시 인원 가져오기
@@ -67,7 +66,7 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
             arrChoicedEmp.map((item) => {
               return (
                 <>
-                  <ListItem key={item.USER_NO} disablePadding>
+                  <ListItem key={item.id} disablePadding>
                     <ListItemButton
                       sx={{
                         cursor: "auto",
@@ -75,7 +74,9 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
                     >
                       <ListItemAvatar>
                         <Avatar
-                          src={`https://hub.haeahn.com/Storage/GW/ImageStorage/Employee/${item.USER_ID}.jpg`}
+                          src={`https://hub.haeahn.com/Storage/GW/ImageStorage/Employee/${
+                            item.mail.split("@")[0]
+                          }.jpg`}
                           sx={{
                             width: 32,
                             height: 32,
@@ -85,33 +86,35 @@ const SelectedEmpList = ({ arrEmp, arrChoicedEmp, setArrChoicedEmp }) => {
                         />
                       </ListItemAvatar>
                       <ListItemText
-                        primary={`${item.USER_NM} `}
+                        primary={`${item.displayName} `}
                         disableTypography={true}
                         className={"listItemTextName"}
                         sx={{ flex: "none" }}
                       />
                       <ListItemText
-                        primary={`${item.TITLE_NM}`}
+                        primary={`${item.jobTitle}`}
                         disableTypography={true}
                         className={"listItemText"}
                         sx={{ flex: "none" }}
                       />
-                      <ListItemText
+                      {/* <ListItemText
                         primary={`${item.DEPT_NM}`}
                         disableTypography={true}
                         className={"listItemText"}
                         sx={{ color: "#ADAEB1" }}
-                      />
-                      <CloseCircleOutlined
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          setArrChoicedEmp((prev) => {
-                            return prev.filter(
-                              (value) => value.USER_NO !== item.USER_NO
-                            );
-                          });
-                        }}
-                      />
+                      /> */}
+                      {item.canDelete && (
+                        <CloseCircleOutlined
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setArrChoicedEmp((prev) => {
+                              return prev.filter(
+                                (value) => value.id !== item.id
+                              );
+                            });
+                          }}
+                        />
+                      )}
                     </ListItemButton>
                   </ListItem>
                   <Divider />

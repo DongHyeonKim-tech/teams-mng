@@ -6,8 +6,8 @@ const TeamList = ({
   dataSource = [],
   selectedRow,
   setSelectedRow,
+  setSelectedChannel,
 }) => {
-  console.log("dataSource: ", dataSource);
   const teamColumns = [
     {
       title: "No",
@@ -81,6 +81,7 @@ const TeamList = ({
           return {
             onClick: () => {
               setSelectedRow(record);
+              setSelectedChannel({});
             },
           };
         }}

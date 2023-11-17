@@ -1,7 +1,8 @@
 import { Input } from "antd";
 import { Paper } from "@mui/material";
 import { experimentalStyled as styled } from "@mui/material/styles";
-
+import React from "react";
+import { notification } from "antd";
 const { Search } = Input;
 
 export const SearchEmp = ({ value, onChange, onSearch }) => {
@@ -24,3 +25,16 @@ export const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
   boxShadow: "none",
 }));
+
+export const Notification = (
+  type = "info",
+  message,
+  description,
+  placement = "bottomRight"
+) => {
+  return notification[type]({
+    message: message,
+    description: description,
+    placement: placement,
+  });
+};
