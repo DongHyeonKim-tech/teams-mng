@@ -84,9 +84,7 @@ const MainPage = () => {
               })
             );
           });
-          getUserList(response.accessToken).then((res) => {
-            console.log("user: ", res);
-          });
+          getUserList(response.accessToken).then((res) => {});
         });
     } else if (tabMenu === "Test") {
       client.get("/BIMTestManage/tests").then((response) => {
@@ -102,7 +100,6 @@ const MainPage = () => {
   }, [tabMenu]);
 
   useEffect(() => {
-    // console.log("selectedRow: ", selectedRow);
     if (selectedRow?.id) {
       getChannelList(token, selectedRow?.id).then((response) => {
         setChannelData(
@@ -121,7 +118,6 @@ const MainPage = () => {
       client
         .get(`/BIMTestManage/tests/${selectedRow.seq}/users`)
         .then((response) => {
-          // console.log("users: ", response);
           setChannelData(
             response.data.map((item, idx) => {
               return { ...item, key: idx + 1 };
@@ -179,7 +175,7 @@ const MainPage = () => {
                 <Typography className={classes.title}>
                   {tabMenu === "Team" ? "Channel" : "Member"}
                 </Typography>
-                <Button
+                {/* <Button
                   variant={"contained"}
                   color={"primary"}
                   className={classes.subButton}
@@ -190,7 +186,7 @@ const MainPage = () => {
                   disabled={!selectedRow?.id && !selectedRow?.seq}
                 >
                   채널 추가
-                </Button>
+                </Button> */}
               </div>
               <ChannelList
                 tabMenu={tabMenu}

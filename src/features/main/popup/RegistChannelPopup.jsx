@@ -5,7 +5,15 @@ import { Item } from "../../common/utils";
 import Info from "./comp/Info";
 import EmpList from "./comp/EmpList";
 import SelectedEmpList from "./comp/SelectedEmpList";
-import { getUserList, getTeamUserList, getEvlUserList } from "../../../graph";
+import {
+  getUserList,
+  getTeamUserList,
+  getEvlUserList,
+  addTeamUser,
+  addChannelUser,
+  deleteChannelUser,
+  deleteTeamUser,
+} from "../../../graph";
 import GetEvlListPopup from "./GetEvlListPopup";
 
 const RegistChannelPopup = ({
@@ -25,13 +33,11 @@ const RegistChannelPopup = ({
     displayName: "",
     description: "",
   });
-  const [arrOriginEmp, setArrOriginEmp] = useState([]);
 
   useEffect(() => {
     if (token) {
       // 초기 직원 명단 조회
       getUserList(token).then((res) => {
-        // console.log("user: ", res);
         let data = res.value.map((item) => {
           return {
             ...item,
@@ -46,25 +52,26 @@ const RegistChannelPopup = ({
   // teams channel user 명단
   const [teamUserList, setTeamUserList] = useState([]);
   // teams channel user -> user 조회 명단
-  const [evlUserCount, setEvlUserList] = useState(0);
+  const [arrEvlUser, setArrEvlUser] = useState([]);
 
   useEffect(() => {
     if (!isCreate && channelInfo?.id) {
       setArrChoicedEmp([]);
       setTeamUserList([]);
-      setEvlUserList(0);
+      setArrEvlUser([]);
       setRegistPopupLoading(true);
       getTeamUserList(token, channelInfo?.teamId, channelInfo?.id).then(
         (teamUserListRes) => {
           if (teamUserListRes.value.length > 0) {
-            console.log("teamUserListRes: ", teamUserListRes);
             setTeamUserList(teamUserListRes.value);
             teamUserListRes.value.map((item) => {
               getEvlUserList(token, item.email).then((evlUserListRes) => {
                 // Teams API에 결과 값이 있을 시
                 if (evlUserListRes.value.length > 0) {
                   let evlUser = evlUserListRes.value[0];
-                  setEvlUserList((prev) => Number(prev) + 1);
+                  setArrEvlUser((prev) => {
+                    return [...prev, { ...evlUser, membershipId: item.id }];
+                  });
 
                   setArrChoicedEmp((prev) => {
                     const arrPrevUserMail = prev.map((item) => item.mail);
@@ -98,18 +105,14 @@ const RegistChannelPopup = ({
   }, [isCreate, channelInfo]);
   const [registPopupLoading, setRegistPopupLoading] = useState(true);
   useEffect(() => {
-    console.log("teampUserList: ", teamUserList);
-    console.log("evlUserCOunt: ", evlUserCount);
-    if (teamUserList.length > 0 && teamUserList.length === evlUserCount) {
+    if (teamUserList.length > 0 && teamUserList.length === arrEvlUser.length) {
       setRegistPopupLoading(false);
     }
-  }, [teamUserList, evlUserCount]);
+  }, [teamUserList, arrEvlUser]);
 
   const [evlListPopupOpen, setEvlListPopupOpen] = useState(false);
   const onEvlListPopuClose = () => setEvlListPopupOpen(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => console.log("loading: ", loading), [loading]);
 
   return (
     <Modal
@@ -118,7 +121,7 @@ const RegistChannelPopup = ({
         onClose();
         setArrChoicedEmp([]);
         setTeamUserList([]);
-        setEvlUserList(0);
+        setArrEvlUser([]);
       }}
       width={1500}
       style={{ minWidth: "1200px" }}
@@ -137,7 +140,47 @@ const RegistChannelPopup = ({
             height: "43px",
             margin: "-12px 12px 0px 0px",
           }}
-          onClick={() => console.log("신청 데이터: ", arrChoicedEmp)}
+          onClick={() => {
+            // 수정
+            if (!isCreate) {
+              const arrEvlUserMail = arrEvlUser.map((item) => item.mail);
+              const arrChoicedEmpMail = arrChoicedEmp.map((item) => item.mail);
+              let arrDeleteUser = arrEvlUser.filter(
+                (item) => !arrChoicedEmpMail.includes(item.mail)
+              );
+              let arrInsertUser = arrChoicedEmp.filter(
+                (item) => !arrEvlUserMail.includes(item.mail)
+              );
+              if (arrDeleteUser.length > 0) {
+                arrDeleteUser.map((item) => {
+                  deleteChannelUser(
+                    token,
+                    channelInfo?.teamId,
+                    channelInfo?.id,
+                    item.membershipId
+                  ).then((deleteRes) => {
+                    deleteTeamUser(
+                      token,
+                      channelInfo?.teamId,
+                      item.membershipId
+                    );
+                  });
+                });
+              }
+              if (arrInsertUser.length > 0) {
+                arrInsertUser.map((item) => {
+                  addTeamUser(token, channelInfo?.teamId, item.id).then(() => {
+                    addChannelUser(
+                      token,
+                      channelInfo?.teamId,
+                      channelInfo?.id,
+                      item.id
+                    );
+                  });
+                });
+              }
+            }
+          }}
         >
           {isCreate ? "추가" : "수정"}
         </Button>

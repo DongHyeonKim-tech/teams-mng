@@ -65,17 +65,8 @@ const GetEvlListPopup = ({
     });
   };
 
-  // useEffect(() => {
-  //   console.log("userCount.lenght: ", userCount.length);
-  //   console.log("userCount: ", userCount);
-  //   userCount.length > 0 ? setLoading(true) : setLoading(false);
-  // }, [userCount]);
-
   useEffect(() => {
-    console.log("userCount: ", userCount);
-    console.log("empList.length: ", empList.length);
     if (userCount > 0 && userCount === empList.length) {
-      console.log("getEvlLoadingFalse");
       setLoading(false);
     }
   }, [userCount, empList]);
@@ -94,7 +85,6 @@ const GetEvlListPopup = ({
             fnButtonClick();
             onClose();
             setUserCount(0);
-            console.log("userCount: ", userCount);
           }}
         >
           확인

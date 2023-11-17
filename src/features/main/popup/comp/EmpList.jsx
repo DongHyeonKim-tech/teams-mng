@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@mui/material";
 import { SearchEmp } from "../../../common/utils";
-import { getSearchUserList } from "../../../../graph";
+import { getUserList, getSearchUserList } from "../../../../graph";
 import { notification } from "antd";
 
 const EmpList = ({
@@ -26,11 +26,15 @@ const EmpList = ({
   };
 
   const onSearch = (value) => {
-    console.log("value: ", value);
-    getSearchUserList(token, value).then((res) => {
-      console.log("searchRes: ", res);
-      setArrEmp(res.value);
-    });
+    if (value) {
+      getSearchUserList(token, value).then((res) => {
+        setArrEmp(res.value);
+      });
+    } else {
+      getUserList(token).then((res) => {
+        setArrEmp(res.value);
+      });
+    }
   };
   return (
     <>
@@ -67,10 +71,8 @@ const EmpList = ({
                         let arrChoicedUserId = prev.map(
                           (item) => item.mail.split("@")[0]
                         );
-                        console.log("item: ", item);
                         let user_id = item.mail.split("@")[0];
                         if (arrChoicedUserId.includes(user_id)) {
-                          console.log("include");
                           notification.warning({
                             message: "이미 추가된 직원입니다.",
                           });
@@ -81,7 +83,7 @@ const EmpList = ({
                               (prevItem) => prevItem.id !== item.id
                             );
                           });
-                          return [...prev, item];
+                          return [...prev, { ...item, canDelete: true }];
                         }
                       })
                     }

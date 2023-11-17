@@ -137,6 +137,97 @@ export const getTeamUserList = async (accessToken, teamId, channelId) => {
     .catch((error) => console.log(error));
 };
 
+export const addTeamUser = async (accessToken, teamId, userId) => {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append("Content-type", "application/json");
+  const body = JSON.stringify({
+    "@odata.type": "#microsoft.graph.aadUserConversationMember",
+    roles: [],
+    "user@odata.bind": `https://graph.microsoft.com/v1.0/users('${userId}')`,
+  });
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: body,
+  };
+
+  return fetch(`${graphConfig.graphChannelEndpoint}/${teamId}/members`, options)
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const addChannelUser = async (
+  accessToken,
+  teamId,
+  channelId,
+  userId
+) => {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append("Content-type", "application/json");
+  const body = JSON.stringify({
+    "@odata.type": "#microsoft.graph.aadUserConversationMember",
+    roles: [],
+    "user@odata.bind": `https://graph.microsoft.com/v1.0/users('${userId}')`,
+  });
+  const options = {
+    method: "POST",
+    headers: headers,
+    body: body,
+  };
+
+  return fetch(
+    `${graphConfig.graphChannelEndpoint}/${teamId}/channels/${channelId}/members`,
+    options
+  )
+    .then((response) => response.json())
+    .catch((error) => console.log(error));
+};
+
+export const deleteChannelUser = async (
+  accessToken,
+  teamId,
+  channelId,
+  membershipId
+) => {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append("Content-type", "application/json");
+  const options = {
+    method: "DELETE",
+    headers: headers,
+  };
+
+  return fetch(
+    `${graphConfig.graphChannelEndpoint}/${teamId}/channels/${channelId}/members/${membershipId}`,
+    options
+  );
+};
+
+export const deleteTeamUser = async (accessToken, teamId, membershipId) => {
+  const headers = new Headers();
+  const bearer = `Bearer ${accessToken}`;
+
+  headers.append("Authorization", bearer);
+  headers.append("Content-type", "application/json");
+  const options = {
+    method: "DELETE",
+    headers: headers,
+  };
+
+  return fetch(
+    `${graphConfig.graphChannelEndpoint}/${teamId}/members/${membershipId}`,
+    options
+  );
+};
+
 export const sendChannelMessage = async (
   accessToken,
   teamId,
