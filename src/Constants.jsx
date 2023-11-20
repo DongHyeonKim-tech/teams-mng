@@ -3,9 +3,11 @@ export const TAB_MENU = [
   {
     value: "Team",
     Icon: <TeamOutlined />,
+    disabled: false,
   },
   {
     value: "Test",
     Icon: <FormOutlined />,
+    disabled: true,
   },
 ];

@@ -44,6 +44,7 @@ export const NavTabButton = ({ setTabMenu }) => {
               </>
             ),
             key: item.value,
+            disabled: item.disabled,
             // children: `Tab ${id}`,
           };
         })}
