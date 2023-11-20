@@ -153,30 +153,36 @@ const RegistChannelPopup = ({
               );
               if (arrDeleteUser.length > 0) {
                 arrDeleteUser.map((item) => {
-                  deleteChannelUser(
-                    token,
-                    channelInfo?.teamId,
-                    channelInfo?.id,
-                    item.membershipId
-                  ).then((deleteRes) => {
-                    deleteTeamUser(
+                  setTimeout(() => {
+                    deleteChannelUser(
                       token,
                       channelInfo?.teamId,
+                      channelInfo?.id,
                       item.membershipId
-                    );
-                  });
+                    ).then((deleteRes) => {
+                      deleteTeamUser(
+                        token,
+                        channelInfo?.teamId,
+                        item.membershipId
+                      );
+                    });
+                  }, 1000);
                 });
               }
               if (arrInsertUser.length > 0) {
                 arrInsertUser.map((item) => {
-                  addTeamUser(token, channelInfo?.teamId, item.id).then(() => {
-                    addChannelUser(
-                      token,
-                      channelInfo?.teamId,
-                      channelInfo?.id,
-                      item.id
+                  setTimeout(() => {
+                    addTeamUser(token, channelInfo?.teamId, item.id).then(
+                      () => {
+                        addChannelUser(
+                          token,
+                          channelInfo?.teamId,
+                          channelInfo?.id,
+                          item.id
+                        );
+                      }
                     );
-                  });
+                  }, 1000);
                 });
               }
             }
