@@ -39,7 +39,7 @@ export const PageLayout = (props) => {
                 href="/"
                 style={{ color: "black", fontWeight: 600 }}
               >
-                Application Title
+                평가인증 Teams 관리
               </a>
               <NavTabButton setTabMenu={setTabMenu} />
             </Navbar>
