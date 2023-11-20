@@ -11,7 +11,7 @@
       "x-ms-version": "2.0",
       "replyUrlsWithType": [
         {
-          "url": "http://localhost:3001/",
+          "url": "http://192.168.40.76:3001",
           "type": "Spa"
         }
       ],
