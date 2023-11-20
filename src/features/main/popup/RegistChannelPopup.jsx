@@ -15,6 +15,7 @@ import {
   deleteTeamUser,
 } from "../../../graph";
 import GetEvlListPopup from "./GetEvlListPopup";
+import { Notification } from "../../common/utils";
 
 const RegistChannelPopup = ({
   open,
@@ -114,14 +115,36 @@ const RegistChannelPopup = ({
   const onEvlListPopuClose = () => setEvlListPopupOpen(false);
   const [loading, setLoading] = useState(false);
 
+  const [cnt, setCnt] = useState(0);
+  const [maxCnt, setMaxCnt] = useState(0);
+
+  const onCloseModal = () => {
+    setMaxCnt(0);
+    setCnt(0);
+    onClose();
+    setArrChoicedEmp([]);
+    setTeamUserList([]);
+    setArrEvlUser([]);
+  };
+
+  useEffect(() => {
+    if (cnt > 0 && maxCnt > 0) {
+      if (cnt === maxCnt) {
+        Notification(
+          "success",
+          "채널 인원 작업 완료",
+          "채널 인원 추가 및 삭제 작업이 완료되었습니다."
+        );
+        onCloseModal();
+      }
+    }
+  }, [cnt, maxCnt]);
+
   return (
     <Modal
       open={open}
       onCancel={() => {
-        onClose();
-        setArrChoicedEmp([]);
-        setTeamUserList([]);
-        setArrEvlUser([]);
+        onCloseModal();
       }}
       width={1500}
       style={{ minWidth: "1200px" }}
@@ -152,37 +175,55 @@ const RegistChannelPopup = ({
                 (item) => !arrEvlUserMail.includes(item.mail)
               );
               if (arrDeleteUser.length > 0) {
+                setMaxCnt((prev) => {
+                  return Number(prev) + Number(arrDeleteUser.length);
+                });
                 arrDeleteUser.map((item) => {
-                  setTimeout(() => {
-                    deleteChannelUser(
-                      token,
-                      channelInfo?.teamId,
-                      channelInfo?.id,
-                      item.membershipId
-                    ).then((deleteRes) => {
-                      deleteTeamUser(
-                        token,
-                        channelInfo?.teamId,
-                        item.membershipId
-                      );
+                  deleteChannelUser(
+                    token,
+                    channelInfo?.teamId,
+                    channelInfo?.id,
+                    item.membershipId
+                  )
+                    .then(() => {
+                      setTimeout(() => {
+                        deleteTeamUser(
+                          token,
+                          channelInfo?.teamId,
+                          item.membershipId
+                        ).catch((err) => {
+                          console.log("유저 팀 삭제: ", err);
+                        });
+                      }, 3000);
+                    })
+                    .catch((err) => {
+                      console.log("유저 채널 삭제: ", err);
                     });
-                  }, 1000);
+                  setCnt((prev) => Number(prev) + 1);
                 });
               }
               if (arrInsertUser.length > 0) {
+                setMaxCnt((prev) => {
+                  return Number(prev) + Number(arrInsertUser.length);
+                });
                 arrInsertUser.map((item) => {
-                  setTimeout(() => {
-                    addTeamUser(token, channelInfo?.teamId, item.id).then(
-                      () => {
+                  addTeamUser(token, channelInfo?.teamId, item.id)
+                    .then(() => {
+                      setTimeout(() => {
                         addChannelUser(
                           token,
                           channelInfo?.teamId,
                           channelInfo?.id,
                           item.id
-                        );
-                      }
-                    );
-                  }, 1000);
+                        ).catch((err) => {
+                          console.log("유저 채널 추가: ", err);
+                        });
+                      }, 3000);
+                    })
+                    .catch((err) => {
+                      console.log("유저 팀 추가: ", err);
+                    });
+                  setCnt((prev) => Number(prev) + 1);
                 });
               }
             }

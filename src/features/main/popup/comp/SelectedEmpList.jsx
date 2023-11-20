@@ -65,7 +65,7 @@ const SelectedEmpList = ({
           {arrChoicedEmp.length > 0 ? (
             arrChoicedEmp.map((item) => {
               return (
-                <>
+                <div key={item.id}>
                   <ListItem key={item.id} disablePadding>
                     <ListItemButton
                       sx={{
@@ -118,7 +118,7 @@ const SelectedEmpList = ({
                     </ListItemButton>
                   </ListItem>
                   <Divider />
-                </>
+                </div>
               );
             })
           ) : (
