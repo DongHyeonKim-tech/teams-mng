@@ -25,6 +25,7 @@ const RegistChannelPopup = ({
   tabMenu,
   token,
 }) => {
+  console.log("channelInfo: ", channelInfo);
   // 직원 조회 명단
   const [arrEmp, setArrEmp] = useState([]);
   // 선택된 직원 명단
@@ -182,26 +183,37 @@ const RegistChannelPopup = ({
                   return Number(prev) + Number(arrDeleteUser.length);
                 });
                 arrDeleteUser.map((item) => {
-                  deleteChannelUser(
-                    token,
-                    channelInfo?.teamId,
-                    channelInfo?.id,
-                    item.membershipId
-                  )
-                    .then(() => {
-                      setTimeout(() => {
-                        deleteTeamUser(
-                          token,
-                          channelInfo?.teamId,
-                          item.membershipId
-                        ).catch((err) => {
-                          console.log("유저 팀 삭제: ", err);
+                  setTimeout(() => {
+                    if (channelInfo?.displayName === "일반") {
+                      deleteTeamUser(
+                        token,
+                        channelInfo?.teamId,
+                        item.membershipId
+                      ).catch((err) => {
+                        console.log("유저 팀 삭제: ", err);
+                      });
+                    } else {
+                      deleteChannelUser(
+                        token,
+                        channelInfo?.teamId,
+                        channelInfo?.id,
+                        item.membershipId
+                      )
+                        .then(() => {
+                          deleteTeamUser(
+                            token,
+                            channelInfo?.teamId,
+                            item.membershipId
+                          ).catch((err) => {
+                            console.log("유저 팀 삭제: ", err);
+                          });
+                        })
+                        .catch((err) => {
+                          console.log("유저 채널 삭제: ", err);
                         });
-                      }, 3000);
-                    })
-                    .catch((err) => {
-                      console.log("유저 채널 삭제: ", err);
-                    });
+                    }
+                  }, 3000);
+
                   setCnt((prev) => Number(prev) + 1);
                 });
               }
