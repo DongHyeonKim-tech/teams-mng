@@ -22,8 +22,8 @@ const RegistChannelPopup = ({
   isCreate = true,
   onClose,
   channelInfo,
-  tabMenu,
   token,
+  user,
 }) => {
   // 직원 조회 명단
   const [arrEmp, setArrEmp] = useState([]);
@@ -35,6 +35,7 @@ const RegistChannelPopup = ({
     description: "",
   });
   const [inputValue, setInputValue] = useState("");
+  const [isManager, setIsManager] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -66,6 +67,12 @@ const RegistChannelPopup = ({
         (teamUserListRes) => {
           if (teamUserListRes.value.length > 0) {
             setTeamUserList(teamUserListRes.value);
+            const userData = teamUserListRes.value.filter(
+              (teamUser) => teamUser.userId === user.localAccountId
+            );
+            userData.length > 0 && userData[0].roles.includes("owner")
+              ? setIsManager(true)
+              : setIsManager(false);
             teamUserListRes.value.map((item) => {
               getEvlUserList(token, item.email).then((evlUserListRes) => {
                 // Teams API에 결과 값이 있을 시
@@ -87,7 +94,6 @@ const RegistChannelPopup = ({
                             canDelete: !item.roles.includes("owner"),
                           },
                         ];
-
                     return returnValue;
                   });
                 } else {
@@ -166,9 +172,10 @@ const RegistChannelPopup = ({
             height: "43px",
             margin: "-12px 12px 0px 0px",
           }}
+          disabled={!isManager}
           onClick={() => {
             // 수정
-            if (!isCreate) {
+            if (!isCreate && isManager) {
               const arrEvlUserMail = arrEvlUser.map((item) => item.mail);
               const arrChoicedEmpMail = arrChoicedEmp.map((item) => item.mail);
               let arrDeleteUser = arrEvlUser.filter(
@@ -290,10 +297,10 @@ const RegistChannelPopup = ({
             <Grid item xs={2} sm={4} md={3} key={3}>
               <Item>
                 <SelectedEmpList
-                  arrEmp={arrEmp}
                   arrChoicedEmp={arrChoicedEmp}
                   setArrChoicedEmp={setArrChoicedEmp}
                   setEvlListPopupOpen={setEvlListPopupOpen}
+                  isManager={isManager}
                 />
               </Item>
             </Grid>

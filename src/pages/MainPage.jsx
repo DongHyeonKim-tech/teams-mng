@@ -64,6 +64,8 @@ const MainPage = () => {
   const [open, setOpen] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
 
+  const [user, setUser] = useState({});
+
   const closeClick = () => {
     setOpen(false);
   };
@@ -85,6 +87,7 @@ const MainPage = () => {
     const userNo = accounts[0]?.username.split("@")[0];
     client.get(`/BIMTest/users/${userNo}`).then((isManager) => {
       setIsManager(isManager.data === 2);
+      setUser({ ...accounts[0], userNo: userNo });
       if (isManager.data !== 2) handleLogout("redirect");
     });
   }, []);
@@ -176,8 +179,8 @@ const MainPage = () => {
                 teamId: selectedRow?.id,
               }
         }
-        tabMenu={tabMenu}
         token={token}
+        user={user}
       />
       <Container className={classes.container} maxWidth="xl" fixed={false}>
         <Grid container spacing={2} sx={{ width: "100%", margin: "0 auto" }}>

@@ -8,44 +8,50 @@ import {
   Avatar,
   Divider,
 } from "@mui/material";
+import { Button } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons/lib/icons";
-import GetEvlListPopup from "../GetEvlListPopup";
 
 const SelectedEmpList = ({
-  arrEmp,
   arrChoicedEmp,
   setArrChoicedEmp,
   setEvlListPopupOpen,
+  isManager,
 }) => {
   return (
     <>
       <div className={"registContentTitle"}>
         선택된 직원 ({arrChoicedEmp.length}명)
-        <button
+        <Button
           style={{
             cursor: "pointer",
             float: "right",
           }}
+          disabled={!isManager}
           onClick={() => {
-            setArrChoicedEmp((prev) => {
-              return prev.filter((item) => !item.canDelete);
-            });
+            if (isManager) {
+              setArrChoicedEmp((prev) => {
+                return prev.filter((item) => !item.canDelete);
+              });
+            }
           }}
         >
           전체 선택 해제
-        </button>
-        <button
+        </Button>
+        <Button
           style={{
             cursor: "pointer",
             float: "right",
             marginRight: "10px",
           }}
+          disabled={!isManager}
           onClick={() => {
-            setEvlListPopupOpen(true);
+            if (isManager) {
+              setEvlListPopupOpen(true);
+            }
           }}
         >
           평가 응시 인원 가져오기
-        </button>
+        </Button>
       </div>
       <div
         className={"evalInfo"}
