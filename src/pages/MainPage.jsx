@@ -6,9 +6,10 @@ import client from "../api/client";
 import TeamList from "../features/main/TeamList";
 import ChannelList from "../features/main/ChannerList";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography, Container, Paper, Grid, Button } from "@mui/material";
+import { Typography, Container, Paper, Grid } from "@mui/material";
 import { TabContext } from "../features/layout/PageLayout";
 import RegistChannelPopup from "../features/main/popup/RegistChannelPopup";
+import { Notification } from "../features/common/utils";
 
 // 수준측정 데이터 임시
 import { lvlMsmtData } from "../tmpLvlMsmt";
@@ -51,6 +52,8 @@ const MainPage = () => {
 
   const { instance, accounts } = useMsal();
 
+  const [isManager, setIsManager] = useState(false);
+
   const [token, setToken] = useState("");
   const [teamData, setTeamData] = useState([]);
   const [channelData, setChannelData] = useState([]);
@@ -65,39 +68,62 @@ const MainPage = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (tabMenu === "Team") {
-      instance
-        .acquireTokenSilent({
-          ...loginRequest,
-          account: accounts[0],
-        })
-        .then((response) => {
-          setToken(response.accessToken);
-          getTeamList(response.accessToken).then((response) => {
-            setTeamData(
-              response.value.map((item, idx) => {
-                return {
-                  ...item,
-                  key: idx + 1,
-                };
-              })
-            );
-          });
-          getUserList(response.accessToken).then((res) => {});
-        });
-    } else if (tabMenu === "Test") {
-      client.get("/BIMTestManage/tests").then((response) => {
-        setTeamData(
-          response.data.map((item, idx) => {
-            return { ...item, key: idx + 1 };
-          })
-        );
+  const handleLogout = (logoutType) => {
+    if (logoutType === "popup") {
+      instance.logoutPopup({
+        postLogoutRedirectUri: "/",
+        mainWindowRedirectUri: "/",
+      });
+    } else if (logoutType === "redirect") {
+      instance.logoutRedirect({
+        postLogoutRedirectUri: "/",
       });
     }
-    setSelectedRow({});
-    setChannelData([]);
-  }, [tabMenu]);
+  };
+
+  useEffect(() => {
+    const userNo = accounts[0]?.username.split("@")[0];
+    client.get(`/BIMTest/users/${userNo}`).then((isManager) => {
+      setIsManager(isManager.data === 2);
+      if (isManager.data !== 2) handleLogout("redirect");
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isManager) {
+      if (tabMenu === "Team") {
+        instance
+          .acquireTokenSilent({
+            ...loginRequest,
+            account: accounts[0],
+          })
+          .then((response) => {
+            setToken(response.accessToken);
+            getTeamList(response.accessToken).then((response) => {
+              setTeamData(
+                response.value.map((item, idx) => {
+                  return {
+                    ...item,
+                    key: idx + 1,
+                  };
+                })
+              );
+            });
+            getUserList(response.accessToken).then((res) => {});
+          });
+      } else if (tabMenu === "Test") {
+        client.get("/BIMTestManage/tests").then((response) => {
+          setTeamData(
+            response.data.map((item, idx) => {
+              return { ...item, key: idx + 1 };
+            })
+          );
+        });
+      }
+      setSelectedRow({});
+      setChannelData([]);
+    }
+  }, [isManager, tabMenu]);
 
   useEffect(() => {
     if (selectedRow?.id) {
