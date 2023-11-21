@@ -27,8 +27,8 @@
     "xlsx-js-style": "^1.2.0"
   },
   "scripts": {
-    "start": "export PORT=3001 && craco start",
-    "build": "export PORT=3001 && craco build"
+    "start": "export PORT=3001 && react-scripts start",
+    "build": "export PORT=3001 && react-scripts build"
   },
   "browserslist": {
     "production": [
