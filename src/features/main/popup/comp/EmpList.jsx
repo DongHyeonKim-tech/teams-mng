@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   List,
   ListItem,
@@ -18,9 +18,9 @@ const EmpList = ({
   arrChoicedEmp,
   setArrChoicedEmp,
   token,
+  inputValue,
+  setInputValue,
 }) => {
-  const [inputValue, setInputValue] = useState("");
-
   const onInputChange = (e) => {
     setInputValue(e.target.value);
   };
@@ -43,6 +43,7 @@ const EmpList = ({
         <SearchEmp
           value={inputValue}
           onChange={onInputChange}
+          setInputValue={setInputValue}
           onSearch={onSearch}
         />
       </div>

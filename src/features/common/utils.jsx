@@ -10,8 +10,8 @@ export const SearchEmp = ({ value, onChange, onSearch }) => {
     <Search
       style={{ width: "200px", float: "right" }}
       placeholder={"직원명 검색"}
-      //   value={value}
-      //   onChange={onChange}
+      value={value}
+      onChange={onChange}
       onSearch={onSearch}
     />
   );

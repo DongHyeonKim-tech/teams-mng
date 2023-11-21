@@ -34,6 +34,7 @@ const RegistChannelPopup = ({
     displayName: "",
     description: "",
   });
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (token) {
@@ -48,7 +49,7 @@ const RegistChannelPopup = ({
         setArrEmp(data);
       });
     }
-  }, [token]);
+  }, [token, open]);
 
   // teams channel user 명단
   const [teamUserList, setTeamUserList] = useState([]);
@@ -125,6 +126,8 @@ const RegistChannelPopup = ({
     setArrChoicedEmp([]);
     setTeamUserList([]);
     setArrEvlUser([]);
+    setArrEmp([]);
+    setInputValue("");
   };
 
   useEffect(() => {
@@ -268,6 +271,8 @@ const RegistChannelPopup = ({
                   arrChoicedEmp={arrChoicedEmp}
                   setArrChoicedEmp={setArrChoicedEmp}
                   token={token}
+                  inputValue={inputValue}
+                  setInputValue={setInputValue}
                 />
               </Item>
             </Grid>
