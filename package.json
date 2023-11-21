@@ -41,5 +41,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://tsu.haeahn.com"
+  "proxy": "https://192.168.40.75:3001"
 }
