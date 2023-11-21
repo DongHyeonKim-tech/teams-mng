@@ -25,7 +25,6 @@ const RegistChannelPopup = ({
   tabMenu,
   token,
 }) => {
-  console.log("channelInfo: ", channelInfo);
   // 직원 조회 명단
   const [arrEmp, setArrEmp] = useState([]);
   // 선택된 직원 명단
