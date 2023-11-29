@@ -220,7 +220,7 @@ const RegistChannelPopup = ({
                         });
                     }
                     setCnt((prev) => Number(prev) + 1);
-                  }, 3000);
+                  }, 7000);
                 }
                 // arrDeleteUser.map((item) => {
                 //   setTimeout(() => {
@@ -252,7 +252,7 @@ const RegistChannelPopup = ({
                 //           console.log("유저 채널 삭제: ", err);
                 //         });
                 //     }
-                //   }, 3000);
+                //   }, 7000);
                 //     setCnt((prev) => Number(prev) + 1);
                 //   });
               }
@@ -278,7 +278,7 @@ const RegistChannelPopup = ({
                         console.log("유저 팀 추가: ", err);
                       });
                     setCnt((prev) => Number(prev) + 1);
-                  }, 3000);
+                  }, 7000);
                 }
                 // arrInsertUser.map((item) => {
                 //   addTeamUser(token, channelInfo?.teamId, item.id)
@@ -292,7 +292,7 @@ const RegistChannelPopup = ({
                 //         ).catch((err) => {
                 //           console.log("유저 채널 추가: ", err);
                 //         });
-                //       }, 3000);
+                //       }, 7000);
                 //     })
                 //     .catch((err) => {
                 //       console.log("유저 팀 추가: ", err);
