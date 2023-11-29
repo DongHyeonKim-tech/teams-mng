@@ -11,9 +11,6 @@ import { TabContext } from "../features/layout/PageLayout";
 import RegistChannelPopup from "../features/main/popup/RegistChannelPopup";
 import { Notification } from "../features/common/utils";
 
-// 수준측정 데이터 임시
-import { lvlMsmtData } from "../tmpLvlMsmt";
-
 const MainPage = () => {
   const tabMenu = useContext(TabContext);
   const useStyles = makeStyles((theme) => ({
