@@ -262,7 +262,7 @@ const RegistChannelPopup = ({
                 });
                 for (let i = 0; i < arrInsertUser.length; i++) {
                   let insertUser = arrInsertUser[i];
-                  setTimeount(() => {
+                  setTimeout(() => {
                     addTeamUser(token, channelInfo?.teamId, insertUser.id)
                       .then(() => {
                         addChannelUser(
