@@ -82,7 +82,7 @@ const MainPage = () => {
 
   useEffect(() => {
     const userNo = accounts[0]?.username.split("@")[0];
-    client.get(`/BIMTest/users/${userNo}`).then((isManager) => {
+    client.get(`/BIMTest/emp/${userNo}`).then((isManager) => {
       setIsManager(isManager.data === 2);
       setUser({ ...accounts[0], userNo: userNo });
       if (isManager.data !== 2) handleLogout("redirect");
