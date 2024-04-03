@@ -34,9 +34,9 @@ const GetEvlListPopup = ({
     });
   }, []);
 
-  const getEvlEmpList = (seq) => {
-    setSelectedRowKey(seq);
-    client.get(`/BIMTestManage/tests/${seq}/users`).then((response) => {
+  const getEvlEmpList = (test_id) => {
+    setSelectedRowKey(test_id);
+    client.get(`/BIMTestManage/tests/${test_id}/users`).then((response) => {
       let userIdList = arrChoicedEmp.map((item) => item.mail.split("@")[0]);
       setEmpList(
         userIdList.length > 0
@@ -103,14 +103,14 @@ const GetEvlListPopup = ({
           return (
             <div key={item.key}>
               <ListItem
-                key={item.seq}
+                key={item.test_id}
                 sx={{
                   backgroundColor:
-                    item.seq === selectedRowKey ? "#d4d4d4" : "#ffffff",
+                    item.test_id === selectedRowKey ? "#d4d4d4" : "#ffffff",
                 }}
                 disablePadding
               >
-                <ListItemButton onClick={() => getEvlEmpList(item.seq)}>
+                <ListItemButton onClick={() => getEvlEmpList(item.test_id)}>
                   <ListItemText
                     primary={`${item.test_type_nm} - ${item.test_nm} `}
                     disableTypography={true}
