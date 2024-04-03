@@ -68,6 +68,7 @@ const GetEvlListPopup = ({
   useEffect(() => {
     if (userCount > 0 && userCount === empList.length) {
       setLoading(false);
+      WebSocket.close();
     }
   }, [userCount, empList]);
 
