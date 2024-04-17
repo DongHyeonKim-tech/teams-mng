@@ -113,7 +113,9 @@ const GetEvlListPopup = ({
               >
                 <ListItemButton onClick={() => getEvlEmpList(item.test_id)}>
                   <ListItemText
-                    primary={`${item.test_type_nm} - ${item.test_nm} `}
+                    primary={`${item.subject_name.split("-")[1]} - ${
+                      item.test_type_nm
+                    } - ${item.test_nm} `}
                     disableTypography={true}
                     className={"listItemTextName"}
                     sx={{ flex: "none" }}
