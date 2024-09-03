@@ -28,8 +28,8 @@
     "xlsx-js-style": "^1.2.0"
   },
   "scripts": {
-    "start": "set PORT=3003 && react-scripts start",
-    "build": "set PORT=3003 && react-scripts build"
+    "start": "export PORT=3003 && react-scripts start",
+    "build": "export PORT=3003 && react-scripts build"
   },
   "browserslist": {
     "production": [
