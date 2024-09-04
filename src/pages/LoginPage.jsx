@@ -44,7 +44,7 @@ const LoginPage = () => {
         <img src="logo-haeahn.png" alt="Logo" className={classes.image} />
 
         <Typography className={classes.title} variant={"h4"}>
-          <b>평가인증 Teams 관리 시스템</b>
+          <b>BIM Teams 관리 시스템</b>
         </Typography>
 
         <SignInButton />
