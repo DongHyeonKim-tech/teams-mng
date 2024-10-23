@@ -174,6 +174,7 @@ const RegistChannelPopup = ({
           disabled={!isManager}
           onClick={async () => {
             // 수정
+            setLoading(true);
             if (!isCreate && isManager) {
               const arrEvlUserMail = await arrEvlUser.map((item) => item.mail);
               const arrChoicedEmpMail = await arrChoicedEmp.map((item) => item.mail);
@@ -233,6 +234,7 @@ const RegistChannelPopup = ({
                 }
               }
             }
+            setLoading(false);
           }}
         >
           {isCreate ? "추가" : "수정"}
