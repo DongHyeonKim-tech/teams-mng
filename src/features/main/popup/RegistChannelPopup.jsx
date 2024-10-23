@@ -127,7 +127,6 @@ const RegistChannelPopup = ({
   const onCloseModal = () => {
     setMaxCnt(0);
     setCnt(0);
-    onClose();
     setArrChoicedEmp([]);
     setTeamUserList([]);
     setArrEvlUser([]);
