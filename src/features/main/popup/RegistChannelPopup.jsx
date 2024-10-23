@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Spin } from "antd";
 import { Box, Grid } from "@mui/material";
-import { Item } from "../../common/utils";
-import Info from "./comp/Info";
-import EmpList from "./comp/EmpList";
-import SelectedEmpList from "./comp/SelectedEmpList";
+import { Button, Modal, Spin } from "antd";
+import { useEffect, useState } from "react";
 import {
-  getUserList,
-  getTeamUserList,
-  getEvlUserList,
-  addTeamUser,
   addChannelUser,
+  addTeamUser,
   deleteChannelUser,
   deleteTeamUser,
+  getEvlUserList,
+  getTeamUserList,
+  getUserList,
 } from "../../../graph";
+import { Item, Notification } from "../../common/utils";
+import EmpList from "./comp/EmpList";
+import Info from "./comp/Info";
+import SelectedEmpList from "./comp/SelectedEmpList";
 import GetEvlListPopup from "./GetEvlListPopup";
-import { Notification } from "../../common/utils";
 
 const RegistChannelPopup = ({
   open,
@@ -173,7 +172,7 @@ const RegistChannelPopup = ({
             margin: "-12px 12px 0px 0px",
           }}
           disabled={!isManager}
-          onClick={() => {
+          onClick={async () => {
             // 수정
             if (!isCreate && isManager) {
               const arrEvlUserMail = arrEvlUser.map((item) => item.mail);
@@ -188,11 +187,9 @@ const RegistChannelPopup = ({
                 setMaxCnt((prev) => {
                   return Number(prev) + Number(arrDeleteUser.length);
                 });
-                for (let i = 0; i < arrDeleteUser.length; i++) {
-                  setTimeout(() => {
-                    let deleteUser = arrDeleteUser[i];
+                for (const deleteUser in arrDeleteUser) {
                     if (channelInfo?.displayName === "일반") {
-                      deleteTeamUser(
+                      await deleteTeamUser(
                         token,
                         channelInfo?.teamId,
                         deleteUser.membershipId
@@ -200,105 +197,39 @@ const RegistChannelPopup = ({
                         console.log("유저 팀 삭제: ", err);
                       });
                     } else {
-                      deleteChannelUser(
+                      await deleteChannelUser(
                         token,
                         channelInfo?.teamId,
                         channelInfo?.id,
                         deleteUser.membershipId
                       )
-                        .then(() => {
-                          deleteTeamUser(
-                            token,
-                            channelInfo?.teamId,
-                            deleteUser.membershipId
-                          ).catch((err) => {
-                            console.log("유저 팀 삭제: ", err);
-                          });
-                        })
-                        .catch((err) => {
-                          console.log("유저 채널 삭제: ", err);
-                        });
+                      await deleteTeamUser(
+                        token,
+                        channelInfo?.teamId,
+                        deleteUser.membershipId
+                      ).catch((err) => {
+                        console.log("유저 팀 삭제: ", err);
+                      });
                     }
                     setCnt((prev) => Number(prev) + 1);
-                  }, 10000);
                 }
-                // arrDeleteUser.map((item) => {
-                //   setTimeout(() => {
-                //     if (channelInfo?.displayName === "일반") {
-                //       deleteTeamUser(
-                //         token,
-                //         channelInfo?.teamId,
-                //         item.membershipId
-                //       ).catch((err) => {
-                //         console.log("유저 팀 삭제: ", err);
-                //       });
-                //     } else {
-                //       deleteChannelUser(
-                //         token,
-                //         channelInfo?.teamId,
-                //         channelInfo?.id,
-                //         item.membershipId
-                //       )
-                //         .then(() => {
-                //           deleteTeamUser(
-                //             token,
-                //             channelInfo?.teamId,
-                //             item.membershipId
-                //           ).catch((err) => {
-                //             console.log("유저 팀 삭제: ", err);
-                //           });
-                //         })
-                //         .catch((err) => {
-                //           console.log("유저 채널 삭제: ", err);
-                //         });
-                //     }
-                //   }, 10000);
-                //     setCnt((prev) => Number(prev) + 1);
-                //   });
               }
               if (arrInsertUser.length > 0) {
                 setMaxCnt((prev) => {
                   return Number(prev) + Number(arrInsertUser.length);
                 });
-                for (let i = 0; i < arrInsertUser.length; i++) {
-                  let insertUser = arrInsertUser[i];
-                  setTimeout(() => {
-                    addTeamUser(token, channelInfo?.teamId, insertUser.id)
-                      .then(() => {
-                        addChannelUser(
-                          token,
-                          channelInfo?.teamId,
-                          channelInfo?.id,
-                          insertUser.id
-                        ).catch((err) => {
-                          console.log("유저 채널 추가: ", err);
-                        });
-                      })
-                      .catch((err) => {
-                        console.log("유저 팀 추가: ", err);
-                      });
+                for (const insertUser in arrInsertUser) {
+                    await addTeamUser(token, channelInfo?.teamId, insertUser.id);
+                    await addChannelUser(
+                      token,
+                      channelInfo?.teamId,
+                      channelInfo?.id,
+                      insertUser.id
+                    ).catch((err) => {
+                      console.log("유저 채널 추가: ", err);
+                    });
                     setCnt((prev) => Number(prev) + 1);
-                  }, 10000);
                 }
-                // arrInsertUser.map((item) => {
-                //   addTeamUser(token, channelInfo?.teamId, item.id)
-                //     .then(() => {
-                //       setTimeout(() => {
-                //         addChannelUser(
-                //           token,
-                //           channelInfo?.teamId,
-                //           channelInfo?.id,
-                //           item.id
-                //         ).catch((err) => {
-                //           console.log("유저 채널 추가: ", err);
-                //         });
-                //       }, 10000);
-                //     })
-                //     .catch((err) => {
-                //       console.log("유저 팀 추가: ", err);
-                //     });
-                //   setCnt((prev) => Number(prev) + 1);
-                // });
               }
             }
           }}
