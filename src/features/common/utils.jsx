@@ -1,8 +1,6 @@
-import { Input } from "antd";
 import { Paper } from "@mui/material";
 import { experimentalStyled as styled } from "@mui/material/styles";
-import React from "react";
-import { notification } from "antd";
+import { Input, notification } from "antd";
 const { Search } = Input;
 
 export const SearchEmp = ({ value, onChange, onSearch }) => {
@@ -30,11 +28,13 @@ export const Notification = (
   type = "info",
   message,
   description,
-  placement = "bottomRight"
+  placement = "bottomRight",
+  duration = 4.5
 ) => {
   return notification[type]({
     message: message,
     description: description,
     placement: placement,
+    duration: duration
   });
 };

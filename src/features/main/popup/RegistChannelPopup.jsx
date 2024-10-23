@@ -141,7 +141,8 @@ const RegistChannelPopup = ({
         Notification(
           "success",
           "채널 인원 작업 완료",
-          "채널 인원 추가 및 삭제 작업이 완료되었습니다."
+          "채널 인원 추가 및 삭제 작업이 완료되었습니다.",
+          null
         );
         onCloseModal();
       }
