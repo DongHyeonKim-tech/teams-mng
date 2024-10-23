@@ -188,7 +188,7 @@ const RegistChannelPopup = ({
                 setMaxCnt((prev) => {
                   return Number(prev) + Number(arrDeleteUser.length);
                 });
-                for (const deleteUser in arrDeleteUser) {
+                for (const deleteUser of arrDeleteUser) {
                     if (channelInfo?.displayName === "일반") {
                       await deleteTeamUser(
                         token,
@@ -219,7 +219,7 @@ const RegistChannelPopup = ({
                 setMaxCnt((prev) => {
                   return Number(prev) + Number(arrInsertUser.length);
                 });
-                for (const insertUser in arrInsertUser) {
+                for (const insertUser of arrInsertUser) {
                     await addTeamUser(token, channelInfo?.teamId, insertUser.id);
                     await addChannelUser(
                       token,
