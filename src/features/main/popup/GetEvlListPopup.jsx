@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Modal } from "antd";
 import {
+  Divider,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Divider,
 } from "@mui/material";
+import { Modal } from "antd";
+import { useEffect, useState } from "react";
 import client from "../../../api/client";
 import { getEvlUserList } from "../../../graph";
 
@@ -47,22 +47,24 @@ const GetEvlListPopup = ({
   };
 
   const fnButtonClick = async () => {
-    setLoading(true);
-    empList.map((item) => {
-      getEvlUserList(token, `${item.user_id}@`).then((res) => {
-        if (res.value.length > 0) {
-          let user = res.value[0];
-          setUserCount((prev) => Number(prev) + 1);
-          setArrChoicedEmp((prev) => {
-            return [...prev, { ...user, canDelete: true }];
-          });
-        } else {
-          setEmpList((prev) => {
-            return prev.filter((prevItem) => prevItem.user_id !== item.user_id);
-          });
-        }
+    if (empList.length > 0) {
+      setLoading(true);
+      empList.map((item) => {
+        getEvlUserList(token, `${item.user_id}@`).then((res) => {
+          if (res.value.length > 0) {
+            let user = res.value[0];
+            setUserCount((prev) => Number(prev) + 1);
+            setArrChoicedEmp((prev) => {
+              return [...prev, { ...user, canDelete: true }];
+            });
+          } else {
+            setEmpList((prev) => {
+              return prev.filter((prevItem) => prevItem.user_id !== item.user_id);
+            });
+          }
+        });
       });
-    });
+    }
   };
 
   useEffect(() => {

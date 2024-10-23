@@ -175,12 +175,12 @@ const RegistChannelPopup = ({
           onClick={async () => {
             // 수정
             if (!isCreate && isManager) {
-              const arrEvlUserMail = arrEvlUser.map((item) => item.mail);
-              const arrChoicedEmpMail = arrChoicedEmp.map((item) => item.mail);
-              let arrDeleteUser = arrEvlUser.filter(
+              const arrEvlUserMail = await arrEvlUser.map((item) => item.mail);
+              const arrChoicedEmpMail = await arrChoicedEmp.map((item) => item.mail);
+              let arrDeleteUser = await arrEvlUser.filter(
                 (item) => !arrChoicedEmpMail.includes(item.mail)
               );
-              let arrInsertUser = arrChoicedEmp.filter(
+              let arrInsertUser = await arrChoicedEmp.filter(
                 (item) => !arrEvlUserMail.includes(item.mail)
               );
               if (arrDeleteUser.length > 0) {
