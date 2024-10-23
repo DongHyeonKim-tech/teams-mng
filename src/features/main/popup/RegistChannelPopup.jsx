@@ -184,7 +184,6 @@ const RegistChannelPopup = ({
               let arrInsertUser = await arrChoicedEmp.filter(
                 (item) => !arrEvlUserMail.includes(item.mail)
               );
-              console.log('arrInsertUser: ',arrInsertUser)
               if (arrDeleteUser.length > 0) {
                 setMaxCnt((prev) => {
                   return Number(prev) + Number(arrDeleteUser.length);

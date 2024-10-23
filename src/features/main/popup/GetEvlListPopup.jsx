@@ -5,7 +5,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
 import client from "../../../api/client";
 import { getEvlUserList } from "../../../graph";
@@ -82,7 +82,7 @@ const GetEvlListPopup = ({
       }}
       title={"평가 목록"}
       footer={
-        <button
+        <Button
           onClick={() => {
             fnButtonClick();
             onClose();
@@ -90,7 +90,7 @@ const GetEvlListPopup = ({
           }}
         >
           확인
-        </button>
+        </Button>
       }
     >
       <List
