@@ -153,6 +153,7 @@ const RegistChannelPopup = ({
       open={open}
       onCancel={() => {
         onCloseModal();
+        onClose();
       }}
       width={1500}
       style={{ minWidth: "1200px" }}
